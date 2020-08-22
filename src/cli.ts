@@ -2,8 +2,9 @@
 
 import ProtoPeg from './';
 
-// Importing it without types because of an odd type bug in Commander that I can't figure out.
+// Importing it without types because it doesn't work with them, idk why.
 const { Command } = require('commander');
+const axios = require('axios');
 
 const program = new Command();
 
@@ -11,10 +12,15 @@ program
     .version(require('../package.json').version)
     .description('Decode and encode PegNet Oracle Price Records (OPRs) and Staking Price Records (SPRs).');
 
-program
-    .command('decode <price-record> [encoding]')
+const decode = program.command('decode <command>').description('decode a price record from a string or entry hash.');
+decode
+    .command('string <price-record> [encoding]')
     .description('decode a price record from a hex, base64 or ascii string. Default encoding is hex.')
     .action(decodePriceRecord);
+decode
+    .command('entry <hash>')
+    .description('decode a price record from an entry hash. Uses OpenNode to get record.')
+    .action(fetchEntry);
 
 const encode = program
     .command('encode <record-type>')
@@ -27,6 +33,25 @@ encode
     .command('opr <price-record> [encoding]')
     .description('encoding can be hex, base64 or ascii. Default encoding is hex. Items in Winners array must be hex.')
     .action(encodePriceRecord('opr'));
+
+async function fetchEntry(hash: string) {
+    try {
+        if (!/[A-Fa-f0-9]{64}/.test(hash)) {
+            throw new Error('Entry hash must be valid hex-encoded sha256.');
+        }
+        const res = await axios.post('https://api.factomd.net/v2', {
+            jsonrpc: '2.0',
+            id: 0,
+            method: 'entry',
+            params: { hash },
+        });
+        const { content } = res.data.result;
+        const message = await decodePriceRecord(content, 'hex');
+    } catch (err) {
+        console.error('Unable to resolve entry.');
+        console.error(err.message);
+    }
+}
 
 async function decodePriceRecord(priceRecord: string, encoding: string = 'hex') {
     try {
