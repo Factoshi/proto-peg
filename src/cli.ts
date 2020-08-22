@@ -7,26 +7,36 @@ const { Command } = require('commander');
 
 const program = new Command();
 
-program.version(require('../package.json').version);
-
-/**
- * DECODE
- */
+program
+    .version(require('../package.json').version)
+    .description('Decode and encode PegNet Oracle Price Records (OPRs) and Staking Price Records (SPRs).');
 
 program
-    .command('decode <price record> [encoding]')
-    .description('Decode a price record from a hex, base64 or ascii string. Default encoding hex.')
+    .command('decode <price-record> [encoding]')
+    .description('Decode a price record from a hex, base64 or ascii string. Default encoding is hex.')
     .action(decodePriceRecord);
+
+const encode = program.command('encode');
+encode
+    .command('spr <price-record> [encoding]')
+    .description('Encode a hex, base64 or ascii SPR from a JSON string. Default encoding is hex.')
+    .action(encodePriceRecord('spr'));
+encode
+    .command('opr <price-record> [encoding]')
+    .description(
+        'Encode a hex, base64 or ascii OPR from JSON. Default encoding is hex. Winners array should be hex encoded.'
+    )
+    .action(encodePriceRecord('opr'));
 
 async function decodePriceRecord(priceRecord: string, encoding: string = 'hex') {
     try {
         if (encoding !== 'base64' && encoding !== 'hex' && encoding !== 'ascii') {
-            console.error('encoding must be base64, hex or ascii');
+            throw new Error('encoding must be base64, hex or ascii');
         }
 
         const protoPeg = new ProtoPeg();
         await protoPeg.init();
-        const buf = Buffer.from(priceRecord, encoding as any);
+        const buf = Buffer.from(priceRecord, encoding);
         const message: any = protoPeg.decode(buf);
 
         if (Array.isArray(message.Winners)) {
@@ -37,17 +47,48 @@ async function decodePriceRecord(priceRecord: string, encoding: string = 'hex') 
     } catch (err) {
         console.error('Unable to decode price record.');
         console.error(err.message);
+        process.exit(1);
     }
 }
 
-/**
- * ENCODE
- */
+function encodePriceRecord(type: 'opr' | 'spr') {
+    return async function (jsonPriceRecord: string, encoding: string = 'hex') {
+        try {
+            if (encoding !== 'base64' && encoding !== 'hex' && encoding !== 'ascii') {
+                throw new Error('encoding must be base64, hex or ascii');
+            }
 
-// const encode = program.command('encode');
+            const protoPeg = new ProtoPeg();
+            await protoPeg.init();
+            const priceRecord = JSON.parse(jsonPriceRecord);
 
-// encode.command('spr <price record>').description('encode an SPR from JSON').action(encodeSPR);
+            // Asset array must be an array of strings.
+            if (!Array.isArray(priceRecord.Assets)) {
+                throw new Error('Price record must contain Assets array.');
+            }
+            priceRecord.Assets = priceRecord.Assets.map((asset: string | number) =>
+                typeof asset === 'number' ? asset.toString() : asset
+            );
 
-// encode.command('opr <price record>').description('encode an OPR from JSON').action(encodeOPR);
+            let buf: Buffer;
+            if (type === 'opr') {
+                // Winners array must be an array of buffers.
+                if (!Array.isArray(priceRecord.Winners)) {
+                    throw new Error('OPRs must contain Winners array.');
+                }
+                priceRecord.Winners = priceRecord.Winners.map((winner: string) => Buffer.from(winner, 'hex'));
+                buf = protoPeg.encodeOPR(priceRecord);
+            } else {
+                buf = protoPeg.encodeSPR(priceRecord);
+            }
+
+            console.log(buf.toString(encoding));
+        } catch (err) {
+            console.error('Unable to decode price record.');
+            console.error(err.message);
+            process.exit(1);
+        }
+    };
+}
 
 program.parse(process.argv);
