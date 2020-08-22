@@ -13,19 +13,19 @@ program
 
 program
     .command('decode <price-record> [encoding]')
-    .description('Decode a price record from a hex, base64 or ascii string. Default encoding is hex.')
+    .description('decode a price record from a hex, base64 or ascii string. Default encoding is hex.')
     .action(decodePriceRecord);
 
-const encode = program.command('encode');
+const encode = program
+    .command('encode <record-type>')
+    .description('encode a hex, base64 or ascii price record from a JSON string.');
 encode
     .command('spr <price-record> [encoding]')
-    .description('Encode a hex, base64 or ascii SPR from a JSON string. Default encoding is hex.')
+    .description('encoding can be hex, base64 or ascii. Default encoding is hex.')
     .action(encodePriceRecord('spr'));
 encode
     .command('opr <price-record> [encoding]')
-    .description(
-        'Encode a hex, base64 or ascii OPR from JSON. Default encoding is hex. Winners array should be hex encoded.'
-    )
+    .description('encoding can be hex, base64 or ascii. Default encoding is hex. Items in Winners array must be hex.')
     .action(encodePriceRecord('opr'));
 
 async function decodePriceRecord(priceRecord: string, encoding: string = 'hex') {
