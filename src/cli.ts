@@ -46,7 +46,7 @@ async function fetchEntry(hash: string) {
             params: { hash },
         });
         const { content } = res.data.result;
-        const message = await decodePriceRecord(content, 'hex');
+        await decodePriceRecord(content, 'hex');
     } catch (err) {
         console.error('Unable to resolve entry.');
         console.error(err.message);
