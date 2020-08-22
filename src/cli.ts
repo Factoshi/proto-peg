@@ -70,7 +70,7 @@ async function decodePriceRecord(priceRecord: string, encoding: string = 'hex') 
 
         console.log(message);
     } catch (err) {
-        console.error('Unable to decode price record.');
+        console.error('Unable to encode price record.');
         console.error(err.message);
         process.exit(1);
     }
@@ -109,7 +109,7 @@ function encodePriceRecord(type: 'opr' | 'spr') {
 
             console.log(buf.toString(encoding));
         } catch (err) {
-            console.error('Unable to decode price record.');
+            console.error('Unable to encode price record.');
             console.error(err.message);
             process.exit(1);
         }
