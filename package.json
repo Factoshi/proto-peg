@@ -2,8 +2,11 @@
     "name": "proto-peg",
     "version": "0.1.0",
     "description": "Library and CLI for serialisation and deserialisation of PegNet SPRs and OPRs.",
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "bin": {
+        "protopeg": "dist/cli.js"
+    },
     "scripts": {
         "test": "mocha -r ts-node/register \"test/**/*.spec.ts\"",
         "test:watch": "nodemon -e ts -w ./src -x npm run test",

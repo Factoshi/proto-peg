@@ -8,7 +8,7 @@
         "module": "commonjs",
         "moduleResolution": "node",
         "noErrorTruncation": false,
-        "outDir": "./lib",
+        "outDir": "./dist",
         "sourceMap": true,
         "strict": true,
         "target": "es5",
