@@ -1,5 +1,6 @@
 import path from 'path';
 import protobuf from 'protobufjs';
+import Long from 'long';
 
 /**
  * Stakig Price Record.
@@ -66,25 +67,66 @@ export default class ProtoPeg {
         }
     }
 
-    // /**
-    //  *
-    //  * @param priceRecord An SPR or OPR to encode.
-    //  */
-    // public encode(priceRecord: StakingPriceRecord | OraclePriceRecord) {
-    //     if (!this.root) {
-    //         throw new ProtoPegError(`ProtoPeg instance not initialised. Did you call ${this.init.name}?`);
-    //     }
+    public encodeSPR(spr: StakingPriceRecord) {
+        return this.encode(spr);
+    }
 
-    //     const PriceRecordMessage = this.root.lookupType('oprencoding.ProtoOPR');
+    public encodeOPR(opr: OraclePriceRecord) {
+        if (typeof opr.ID !== 'string') {
+            throw new EncodeError('ID field must be a string.');
+        }
 
-    //     // Validate the input
-    //     const err = PriceRecordMessage.verify(priceRecord);
-    //     if (err) {
-    //         throw new ProtoPegError(err);
-    //     }
+        if (!Array.isArray(opr.Winners)) {
+            throw new EncodeError('Winners field must be an array.');
+        }
 
-    //     const message = PriceRecordMessage.create(priceRecord);
-    // }
+        for (const winner of opr.Winners) {
+            if (!Buffer.isBuffer(winner)) {
+                throw new EncodeError('Winners array must contain buffers.');
+            }
+        }
+
+        return this.encode(opr);
+    }
+
+    protected encode(priceRecord: StakingPriceRecord | OraclePriceRecord) {
+        if (!this.root) {
+            throw new ProtoPegError(`ProtoPeg instance not initialised. Did you call ${this.init.name}?`);
+        }
+
+        if (typeof priceRecord.Address !== 'string') {
+            throw new EncodeError('Address field must be a string.');
+        }
+
+        if (!Array.isArray(priceRecord.Assets)) {
+            throw new EncodeError('Assets field must be an array.');
+        }
+
+        for (const asset of priceRecord.Assets) {
+            if (typeof asset !== 'string') {
+                throw new EncodeError('Asset array must contain strings.');
+            }
+        }
+
+        if (typeof priceRecord.Height !== 'number') {
+            throw new EncodeError('Height field must be a number.');
+        }
+
+        try {
+            const PriceRecordMessage = this.root.lookupType('priceRecordEncoding.ProtoPriceRecord');
+
+            // The protobuf library expects a Long for uint64 types.
+            const longPriceRecord = {
+                ...priceRecord,
+                Assets: priceRecord.Assets.map((asset) => Long.fromString(asset, true)),
+            };
+
+            const message = PriceRecordMessage.fromObject(longPriceRecord);
+            return Buffer.from(PriceRecordMessage.encode(message).finish());
+        } catch (err) {
+            throw new EncodeError(err.message);
+        }
+    }
 }
 
 export class ProtoPegError extends Error {}
