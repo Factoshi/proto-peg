@@ -1,22 +1,41 @@
 import path from 'path';
 import protobuf from 'protobufjs';
 
+/**
+ * Stakig Price Record.
+ */
 export interface StakingPriceRecord {
-    // The Factoid address that submitted the Price Record.
+    /**
+     * The Factoid address that submitted the price Record.
+     */
     Address: string;
-    // The height the price record was submitted for.
+    /**
+     * The height the price record was submitted for.
+     */
     Height: number;
-    // Ordered array of asset prices. Encoded as a string as an int may exceed MAX_SAFE_INTEGER.
+    /**
+     * Ordered array of asset prices. Encoded as a string as an int may exceed MAX_SAFE_INTEGER.
+     */
     Assets: string[];
 }
 
+/**
+ * Oracle Price Record.
+ */
 export interface OraclePriceRecord extends StakingPriceRecord {
-    // Previous winners.
+    /**
+     * Previous winners.
+     */
     Winners: Buffer[];
-    // The ID of the submitter.
+    /**
+     * The ID of the submitter.
+     */
     ID: string;
 }
 
+/**
+ * ProtoPeg class. Must use the async initialise before encoding or decoding.
+ */
 export default class ProtoPeg {
     private root?: protobuf.Root;
 
