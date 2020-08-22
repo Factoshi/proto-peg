@@ -20,7 +20,7 @@ decode
 decode
     .command('entry <hash>')
     .description('decode a price record from an entry hash. Uses OpenNode to get record.')
-    .action(fetchEntry);
+    .action(decodeByEntryHash);
 
 const encode = program
     .command('encode <record-type>')
@@ -34,7 +34,7 @@ encode
     .description('encoding can be hex, base64 or ascii. Default encoding is hex. Items in Winners array must be hex.')
     .action(encodePriceRecord('opr'));
 
-async function fetchEntry(hash: string) {
+async function decodeByEntryHash(hash: string) {
     try {
         if (!/[A-Fa-f0-9]{64}/.test(hash)) {
             throw new Error('Entry hash must be valid hex-encoded sha256.');
