@@ -1,7 +1,8 @@
 {
-    "name": "proto-peg",
+    "name": "@factoshi/proto-peg",
     "version": "0.1.0",
     "description": "Library and CLI for serialisation and deserialisation of PegNet SPRs and OPRs.",
+    "homepage": "https://github.com/Factoshi/proto-peg",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "bin": {
@@ -12,10 +13,8 @@
         "test:watch": "nodemon -e ts -w ./src -x npm run test",
         "build": "tsc",
         "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
-        "lint": "tslint -p tsconfig.json",
         "prepare": "npm run build",
-        "prepublishOnly": "npm test && npm run lint",
-        "preversion": "npm run lint",
+        "prepublishOnly": "npm test",
         "version": "npm run format && git add -A src",
         "postversion": "git push && git push --tags"
     },
@@ -50,8 +49,6 @@
         "nodemon": "^2.0.4",
         "prettier": "^2.0.5",
         "ts-node": "^9.0.0",
-        "tslint": "^6.1.3",
-        "tslint-config-prettier": "^1.18.0",
         "typescript": "^4.0.2"
     },
     "dependencies": {
