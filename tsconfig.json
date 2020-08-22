@@ -2,21 +2,18 @@
     "compilerOptions": {
         "alwaysStrict": true,
         "baseUrl": "./",
+        "declaration": true,
         "esModuleInterop": true,
         "lib": ["esnext"],
         "module": "commonjs",
         "moduleResolution": "node",
         "noErrorTruncation": false,
-        "outDir": "dist",
+        "outDir": "./lib",
         "sourceMap": true,
         "strict": true,
-        "target": "ES2020",
-        "types": ["node"],
-        "paths": {
-            "@model/*": ["model/*"],
-            "@api/*": ["api/*"],
-            "@lib/*": ["lib/*"]
-        }
+        "target": "es5",
+        "types": ["node"]
     },
-    "include": ["lib/**/*", "bin/**/*", "model/**/*", "api/**/*"]
+    "include": ["src"],
+    "exclude": ["node_modules", "**/__tests__/*"]
 }
