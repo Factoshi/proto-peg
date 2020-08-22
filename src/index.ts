@@ -67,10 +67,18 @@ export default class ProtoPeg {
         }
     }
 
+    /**
+     * Encodes the entry content of a staking price record.
+     * @param spr A staking price record.
+     */
     public encodeSPR(spr: StakingPriceRecord) {
         return this.encode(spr);
     }
 
+    /**
+     * Encodes the entry content of an oracle price record.
+     * @param opr An oracle price record
+     */
     public encodeOPR(opr: OraclePriceRecord) {
         if (typeof opr.ID !== 'string') {
             throw new EncodeError('ID field must be a string.');
