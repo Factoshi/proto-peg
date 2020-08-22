@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "alwaysStrict": true,
+        "baseUrl": "./",
+        "esModuleInterop": true,
+        "lib": ["esnext"],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noErrorTruncation": false,
+        "outDir": "dist",
+        "sourceMap": true,
+        "strict": true,
+        "target": "ES2020",
+        "types": ["node"],
+        "paths": {
+            "@model/*": ["model/*"],
+            "@api/*": ["api/*"],
+            "@lib/*": ["lib/*"]
+        }
+    },
+    "include": ["lib/**/*", "bin/**/*", "model/**/*", "api/**/*"]
+}
