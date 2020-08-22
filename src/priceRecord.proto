@@ -1,7 +1,7 @@
 syntax = "proto3";
-package oprencoding;
+package priceRecordEncoding;
 
-message ProtoOPR {
+message ProtoPriceRecord {
     string Address = 1;
     string ID = 2;
     int32 Height = 3;

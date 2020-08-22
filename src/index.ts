@@ -24,7 +24,7 @@ export default class ProtoPeg {
      * Initialises the ProtoPeg instance. Must be called once before encoding or decoding price records.
      */
     public async init() {
-        this.root = await protobuf.load(path.join(__dirname, 'opr.proto'));
+        this.root = await protobuf.load(path.join(__dirname, 'priceRecrod.proto'));
     }
 
     /**
@@ -37,7 +37,7 @@ export default class ProtoPeg {
         }
 
         try {
-            const PriceRecordMessage = this.root.lookupType('oprencoding.ProtoOPR');
+            const PriceRecordMessage = this.root.lookupType('priceRecordEncoding.ProtoPriceRecord');
             const message = PriceRecordMessage.decode(buf);
             const priceRecord = PriceRecordMessage.toObject(message, { longs: String });
 
