@@ -44,7 +44,7 @@ export default class ProtoPeg {
      * Initialises the ProtoPeg instance. Must be called once before encoding or decoding price records.
      */
     public async init() {
-        this.root = await protobuf.load(path.join(__dirname, 'priceRecord.proto'));
+        this.root = await protobuf.load(path.join(__dirname, '../priceRecord.proto'));
     }
 
     /**

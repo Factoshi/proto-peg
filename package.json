@@ -27,7 +27,8 @@
     "author": "afenrir",
     "license": "MIT",
     "files": [
-        "lib/**/*"
+        "dist/**/*",
+        "*.proto"
     ],
     "husky": {
         "hooks": {
