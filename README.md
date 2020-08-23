@@ -18,7 +18,7 @@ await protoPeg.init();
 Decode takes a price record in a Buffer and returns StakingPriceRecord or OraclePriceRecord.
 
 ```javascript
-const buf = Buffer.from('CjRGQTJ1SFJ0V...');
+const buf = Buffer.from('CjRGQTJ1SFJ0V...', 'base64');
 const priceRecord = protoPeg.decode(buf);
 ```
 
