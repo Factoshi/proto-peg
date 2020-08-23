@@ -1,6 +1,6 @@
 {
     "name": "@factoshi/proto-peg",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "Library and CLI for serialisation and deserialisation of PegNet SPRs and OPRs.",
     "homepage": "https://github.com/Factoshi/proto-peg",
     "main": "dist/index.js",
